@@ -270,7 +270,9 @@ async function onTyping(e: KeyboardEvent) {
   }
 
   if (
-    [WordPracticeType.Spell, WordPracticeType.FollowWrite].includes(settingStore.wordPracticeType) &&
+    [WordPracticeType.Spell, WordPracticeType.FollowWrite, WordPracticeType.Listen].includes(
+      settingStore.wordPracticeType
+    ) &&
     !isTypingSentence()
   ) {
     if (e.code === 'Enter') {
