@@ -1,6 +1,7 @@
 import { onDeactivated, onMounted, onUnmounted, watch } from 'vue'
 import { emitter, EventKey } from '../utils/eventBus'
 import { useRuntimeStore, useSettingStore } from '../stores'
+import { WordPracticeType } from '../types'
 import { isMobile } from '../utils'
 
 export function useWindowClick(cb: (e: PointerEvent) => void) {
@@ -262,6 +263,18 @@ export function useStartKeyboardEventListener() {
     if ((e.ctrlKey || e.metaKey) && ['KeyC', 'KeyA'].includes(e.code)) return
     if (window?.disableEventListener) return
     if (!runtimeStore.disableEventListener) {
+      if (
+        e.code === 'Enter' &&
+        [WordPracticeType.Spell, WordPracticeType.FollowWrite].includes(settingStore.wordPracticeType) &&
+        !e.ctrlKey &&
+        !e.altKey &&
+        !e.metaKey &&
+        !e.shiftKey
+      ) {
+        e.preventDefault()
+        return emitter.emit(EventKey.onTyping, e)
+      }
+
       // 检查当前单词是否包含空格，如果包含，则空格键应该被视为输入
       if (e.code === 'Space') {
         // 获取当前正在输入的单词信息

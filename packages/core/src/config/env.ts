@@ -1,7 +1,6 @@
 import { offset } from '@floating-ui/dom'
-import { WordPracticeMode, WordPracticeStage } from '../types'
+import { ShortcutKey, WordPracticeMode, WordPracticeStage } from '../types/enum.ts'
 //这里合并导入，打包会报错
-import { ShortcutKey } from '../types/enum.ts'
 
 export const GITHUB = 'https://github.com/zyronon/TypeWords'
 export const Host = 'typewords.cc'
@@ -75,9 +74,10 @@ export const SAVE_DICT_KEY = {
 //19:修复快捷键下一个单词和跳过单词重复了
 //20:修复19版本未导入变量，导致抛错所有用户setting变默认值的bug
 //21:修复快捷键下一个单词和跳过单词重复了
+//22:收藏单词默认快捷键改为 Ctrl+U
 export const SAVE_SETTING_KEY = {
   key: 'typing-word-setting',
-  version: 21,
+  version: 22,
 }
 
 //5版本，不再单独保存 app version字段
@@ -120,7 +120,7 @@ export const DefaultShortcutKeyMap = {
   [ShortcutKey.Next]: 'Ctrl+➡',
   [ShortcutKey.Ignore]: 'Tab',
   [ShortcutKey.ToggleSimple]: '`',
-  [ShortcutKey.ToggleCollect]: 'Enter',
+  [ShortcutKey.ToggleCollect]: 'Ctrl+U',
   [ShortcutKey.PreviousChapter]: 'Alt+⬅',
   [ShortcutKey.NextChapter]: 'Alt+➡',
   [ShortcutKey.NextStep]: 'Shift+➡',

@@ -192,6 +192,13 @@ export async function checkAndUpgradeSaveSetting(val: any) {
         defaultState.shortcutKeyMap[ShortcutKey.Next] = DefaultShortcutKeyMap[ShortcutKey.Next]
         updateLocalData = true
       }
+      if (
+        version <= 21 &&
+        defaultState.shortcutKeyMap[ShortcutKey.ToggleCollect] === 'Enter'
+      ) {
+        defaultState.shortcutKeyMap[ShortcutKey.ToggleCollect] = DefaultShortcutKeyMap[ShortcutKey.ToggleCollect]
+        updateLocalData = true
+      }
 
       // @ts-ignore
       delete state.shortcutKeyMap

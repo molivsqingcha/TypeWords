@@ -268,6 +268,56 @@ async function onTyping(e: KeyboardEvent) {
     target = props.word.word
     targetVolumeIcon = volumeIconRef
   }
+
+  if (
+    [WordPracticeType.Spell, WordPracticeType.FollowWrite].includes(settingStore.wordPracticeType) &&
+    !isTypingSentence()
+  ) {
+    if (e.code === 'Enter') {
+      if (!input.length) {
+        inputLock = false
+        updateCurrentWordInfo()
+        return
+      }
+
+      inputLock = true
+      wrong = ''
+      if (right) {
+        wordCompletedTime = Date.now()
+        playCorrect()
+        clearJumpTimer()
+        completeTypeWord(false)
+        showWordResult.value = inputLock = false
+      } else {
+        typo()
+        playBeep()
+        if (settingStore.wordSound) targetVolumeIcon?.play()
+        Toast.warning('拼写错误，请重新输入', { duration: 1200 })
+        input = ''
+        wrong = ''
+        inputLock = false
+      }
+      updateCurrentWordInfo()
+      return
+    }
+
+    if (inputLock) {
+      return
+    }
+
+    if (e.key.length !== 1 && e.code !== 'Space') {
+      return
+    }
+
+    const letter = e.code === 'Space' ? ' ' : e.key
+    input += letter
+    wrong = ''
+    playKeyboardAudio()
+    updateCurrentWordInfo()
+    inputLock = false
+    return
+  }
+
   // 输入完成会锁死不能再输入
   if (inputLock) {
     //判断是否是空格键以便切换到下一个
