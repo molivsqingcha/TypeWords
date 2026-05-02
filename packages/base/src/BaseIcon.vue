@@ -5,13 +5,14 @@ defineProps<{
   title?: string
   disabled?: boolean
   noBg?: boolean
+  placement?: 'auto' | 'top' | 'bottom'
 }>()
 
 const emit = defineEmits(['click'])
 </script>
 
 <template>
-  <Tooltip :title="title">
+  <Tooltip :title="title" :placement="placement">
     <div v-bind="$attrs" @click="e => !disabled && emit('click', e)" class="icon-wrapper" :class="{ disabled, noBg }">
       <slot />
     </div>

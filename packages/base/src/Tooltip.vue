@@ -19,6 +19,12 @@ export default {
       default() {
         return false
       }
+    },
+    placement: {
+      type: String,
+      default() {
+        return 'auto'
+      }
     }
   },
   data() {
@@ -36,7 +42,11 @@ export default {
       this.$nextTick(() => {
         let tip = this.$refs?.tip?.getBoundingClientRect()
         if (!tip) return
-        if (rect.top < 50) {
+        if (this.placement === 'bottom') {
+          this.$refs.tip.style.top = rect.top + rect.height + 10 + 'px'
+        } else if (this.placement === 'top') {
+          this.$refs.tip.style.top = rect.top - tip.height - 10 + 'px'
+        } else if (rect.top < 50) {
           this.$refs.tip.style.top = rect.top + rect.height + 10 + 'px'
         } else {
           this.$refs.tip.style.top = rect.top - tip.height - 10 + 'px'

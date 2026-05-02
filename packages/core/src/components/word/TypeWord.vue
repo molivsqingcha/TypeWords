@@ -779,6 +779,7 @@ const isCollect = $computed(() => isWordCollect(props.word))
       <div class="mt-2 flex gap-4">
         <BaseIcon
           @click="emit('toggleSimple')"
+          placement="bottom"
           :title="
             (!isSimple ? $t('mark_mastered') : $t('unmark_mastered')) +
             `(${settingStore.shortcutKeyMap[ShortcutKey.ToggleSimple]})`
@@ -789,6 +790,7 @@ const isCollect = $computed(() => isWordCollect(props.word))
         </BaseIcon>
         <BaseIcon
           @click="toggleWordCollect(word)"
+          placement="bottom"
           :title="
             (!isCollect ? $t('collect') : $t('uncollect')) +
             `(${settingStore.shortcutKeyMap[ShortcutKey.ToggleCollect]})`
@@ -797,7 +799,11 @@ const isCollect = $computed(() => isWordCollect(props.word))
           <IconFluentStarAdd16Regular v-if="!isCollect" />
           <IconFluentStar16Filled v-else />
         </BaseIcon>
-        <BaseIcon @click="emit('skip')" :title="`${$t('skip_word')}(${settingStore.shortcutKeyMap[ShortcutKey.Next]})`">
+        <BaseIcon
+          @click="emit('skip')"
+          placement="bottom"
+          :title="`${$t('skip_word')}(${settingStore.shortcutKeyMap[ShortcutKey.Next]})`"
+        >
           <IconFluentArrowBounce20Regular class="transform-rotate-180" />
         </BaseIcon>
       </div>
