@@ -265,7 +265,7 @@ export function useStartKeyboardEventListener() {
     if (!runtimeStore.disableEventListener) {
       if (
         e.code === 'Enter' &&
-        [WordPracticeType.Spell, WordPracticeType.FollowWrite, WordPracticeType.Listen].includes(
+        [WordPracticeType.Spell, WordPracticeType.FollowWrite, WordPracticeType.Listen, WordPracticeType.Dictation].includes(
           settingStore.wordPracticeType
         ) &&
         !e.ctrlKey &&

@@ -113,9 +113,7 @@ function reset() {
   wordCompletedTime = 0 // 重置时间戳
   wrongTimes.value = 0
   if (settingStore.wordSound) {
-    if (settingStore.wordPracticeType !== WordPracticeType.Dictation) {
-      volumeIconRef?.play(400, true)
-    }
+    volumeIconRef?.play(400, true)
   }
   // 更新当前单词信息
   updateCurrentWordInfo()
@@ -270,7 +268,7 @@ async function onTyping(e: KeyboardEvent) {
   }
 
   if (
-    [WordPracticeType.Spell, WordPracticeType.FollowWrite, WordPracticeType.Listen].includes(
+    [WordPracticeType.Spell, WordPracticeType.FollowWrite, WordPracticeType.Listen, WordPracticeType.Dictation].includes(
       settingStore.wordPracticeType
     ) &&
     !isTypingSentence()
@@ -305,6 +303,28 @@ async function onTyping(e: KeyboardEvent) {
 
     if (inputLock) {
       return
+    }
+
+    // 默写模式：空格键触发提交验证，而不是当普通字符输入
+    if (settingStore.wordPracticeType === WordPracticeType.Dictation && e.code === 'Space') {
+      // 输入不为空且（输入足够长 或 单词不含空格），才进行校验
+      if (input.length && (input.length >= target.length || !target.includes(' '))) {
+        if (input.toLowerCase() === target.toLowerCase()) {
+          if (showWordResult.value) {
+            return emit('complete')
+          } else {
+            playCorrect()
+            if (settingStore.wordSound) targetVolumeIcon?.play()
+          }
+        } else {
+          playBeep()
+          if (settingStore.wordSound) targetVolumeIcon?.play()
+          typo()
+        }
+        showWordResult.value = true
+        return
+      }
+      // 输入还不够长（多词短语中间的空格），当作字符追加
     }
 
     if (e.key.length !== 1 && e.code !== 'Space') {
@@ -363,19 +383,14 @@ async function onTyping(e: KeyboardEvent) {
   inputLock = true
   let letter = e.key
   // console.log('letter',letter)
-  //默写特殊逻辑
+  //以下代码在 Dictation 进入第一块后不再可达
   if (settingStore.wordPracticeType === WordPracticeType.Dictation) {
     if (e.code === 'Space') {
-      //如果输入长度大于单词长度/单词不包含空格，并且输入不为空（开始直接输入空格不行），则显示单词；
-      // 这里inputLock 不设为 false，不能再输入了，只能删除（删除会重置 inputLock）或按空格切下一格
       if (input.length && (input.length >= target.length || !target.includes(' '))) {
-        //比对是否一致
         if (input.toLowerCase() === target.toLowerCase()) {
-          //如果已显示单词，则发射完成事件，并 return
           if (showWordResult.value) {
             return emit('complete')
           } else {
-            //未显示单词，则播放正确音乐，并在后面设置为 showWordResult.value 为 true 来显示单词
             playCorrect()
             if (settingStore.wordSound) targetVolumeIcon?.play()
           }
@@ -691,7 +706,7 @@ const isCollect = $computed(() => isWordCollect(props.word))
                 <div class="w-50 flex-1" :class="showWordResult ? (right ? 'right' : 'wrong') : ''">
                   <template v-for="i in input">
                     <span class="l" v-if="i !== ' '">{{ i }}</span>
-                    <Space class="l" v-else :is-wrong="showWordResult ? !right : false" :is-wait="!showWordResult" />
+                    <span class="l dictation-space" v-else></span>
                   </template>
                 </div>
                 <div class="dictation"></div>
@@ -841,6 +856,11 @@ const isCollect = $computed(() => isWordCollect(props.word))
 <style scoped lang="scss">
 .dictation {
   border-bottom: 1px solid gray;
+}
+
+.dictation-space {
+  display: inline-block;
+  width: 0.5em;
 }
 
 .typing-word {
