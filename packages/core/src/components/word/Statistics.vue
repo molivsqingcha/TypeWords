@@ -98,7 +98,7 @@ const encouragementText = $computed(() => {
 </script>
 
 <template>
-  <Dialog v-model="model" :close-on-click-bg="false" :header="false" :keyboard="false" :show-close="false">
+  <Dialog v-model="model" :close-on-click-bg="true" :header="false" :keyboard="true" :show-close="true">
     <div class="p-8 pr-3 bg-[var(--bg-card-primary)] rounded-2xl">
       <!-- Header Section -->
       <div class="text-center relative">
@@ -232,6 +232,11 @@ const encouragementText = $computed(() => {
   </Dialog>
 </template>
 <style scoped lang="scss">
+:deep(.modal) {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
 // 移动端适配
 @media (max-width: 768px) {
   // 弹窗容器优化

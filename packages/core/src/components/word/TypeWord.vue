@@ -120,7 +120,9 @@ function reset() {
   wordCompletedTime = 0 // 重置时间戳
   wrongTimes.value = 0
   if (settingStore.wordSound) {
-    volumeIconRef?.play(400, true)
+    _nextTick(() => {
+      volumeIconRef?.play(400, true)
+    })
   }
   // 更新当前单词信息
   updateCurrentWordInfo()
@@ -703,10 +705,9 @@ const isCollect = $computed(() => isWordCollect(props.word))
         <div
           class="phonetic"
           :class="
-            (settingStore.dictation ||
-              [WordPracticeType.Spell, WordPracticeType.Listen, WordPracticeType.Dictation].includes(
-                settingStore.wordPracticeType
-              )) &&
+            [WordPracticeType.Spell, WordPracticeType.Listen, WordPracticeType.Dictation].includes(
+              settingStore.wordPracticeType
+            ) &&
             !showFullWord &&
             !showWordResult &&
             'word-shadow'
@@ -718,10 +719,9 @@ const isCollect = $computed(() => isWordCollect(props.word))
         <div
           class="phonetic"
           :class="
-            (settingStore.dictation ||
-              [WordPracticeType.Spell, WordPracticeType.Listen, WordPracticeType.Dictation].includes(
-                settingStore.wordPracticeType
-              )) &&
+            [WordPracticeType.Spell, WordPracticeType.Listen, WordPracticeType.Dictation].includes(
+              settingStore.wordPracticeType
+            ) &&
             !showFullWord &&
             !showWordResult &&
             'word-shadow'
@@ -757,13 +757,14 @@ const isCollect = $computed(() => isWordCollect(props.word))
               {{ word.word }}
             </div>
             <div
-              class="mt-2 w-120 dictation"
+              class="mt-2 w-120"
               :style="{ minHeight: settingStore.fontSize.wordForeignFontSize + 'px' }"
               :class="showWordResult ? (right ? 'right' : 'wrong') : ''"
             >
-              <template v-for="i in input">
-                <span class="l" v-if="i !== ' '">{{ i }}</span>
-                <span class="l dictation-space" v-else></span>
+              <template v-for="(char, idx) in word.word.split('')" :key="idx">
+                <span v-if="char === ' '" class="l dictation-space"></span>
+                <span v-else-if="idx < input.length" class="l">{{ input[idx] }}</span>
+                <span v-else class="l letter-underline"></span>
               </template>
             </div>
           </div>
@@ -1046,6 +1047,13 @@ const isCollect = $computed(() => isWordCollect(props.word))
 .dictation-space {
   display: inline-block;
   width: 0.5em;
+}
+
+.letter-underline {
+  display: inline-block;
+  min-width: 0.5em;
+  border-bottom: 2px solid gray;
+  margin: 0 1px;
 }
 
 .typing-word {

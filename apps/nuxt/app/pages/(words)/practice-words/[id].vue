@@ -403,6 +403,7 @@ function watchStage(n: WordPracticeStage) {
       settingStore.wordPracticeType = WordPracticeType.Identify
       break
   }
+  watchPracticeType(settingStore.wordPracticeType)
 }
 
 function watchPracticeType(n: WordPracticeType) {
@@ -895,7 +896,6 @@ watch(isIniting, n => {
   if (!n) {
     watchRefList = [
       watch(() => statStore.stage, watchStage),
-      watch(() => settingStore.wordPracticeType, watchPracticeType),
       watch(() => data.index, savePracticeData),
       // 监听 statStore.spend，每过10秒自动保存数据
       watch(
